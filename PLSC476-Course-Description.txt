@@ -1,0 +1,7 @@
+PLSC 476: Empirical Legal Studies
+
+This course engages students in the empirical study of law and the courts.
+
+The tools of social science affect both how scholars understand the workings of the judicial system and how lawyers practice law. This course engages students in the empirical study of law and the courts. It provides them with the substantive knowledge, and statistical and analytic skills they need to understand both (1) how social scientists use empirical evidence to make inferences about laws, judges, and legal institutions and (2) how statistical methods are used in legal practice. Through the course, students will undertake statistical analyses and learn how to present these analyses to nontechnical audiences, such as jurors, employers, and the general public. The course begins with an overview of the social scientific study of law and the courts, and then investigates a series of topics, including how social science and empirical evidence are used to make legal claims and establish legal standards, to provide a context for judicial decisions, and to litigate cases.
+
+This course is a Data Intensive course recommended for Bachelor of Science (BS) students in Political Science and for Social Data Analytics (SoDA). PLSC 309 or STAT 200 are required pre-reqs for this course

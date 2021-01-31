@@ -1,13 +1,14 @@
 ---
-title: "PLSC476: Empirical Legal Studies"
-date: January 28, 2021
-author: Christopher Zorn
-output: 
+title: 'PLSC476: Empirical Legal Studies'
+author: "Christopher Zorn"
+date: "January 28, 2021"
+output:
   beamer_presentation:
-    theme: "Pittsburgh"
-    colortheme: "dove"
+    colortheme: dove
     includes:
       in_header: LaTeX-header.tex
+    theme: Pittsburgh
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +26,6 @@ knitr::opts_chunk$set(echo = FALSE)
 library(RCurl)
 library(readxl)
 library(visdat)
-library(naniar)
 library(sf)
 library(dplyr)
 library(ggplot2)
@@ -60,12 +60,10 @@ options(digits = 3) # show fewer decimal places
  - Purpose: To allow for the creation of *reproduceable*, *dynamic* documents, presentations, and web pages.
  - Similar to Markdown (and other lightweight, literate markup languages)
  - Combines text, `R code`, and R output
- - Outut formats: PDF, HTML, Word, Shiny (for interactive web apps), others
+ - Output formats: PDF, HTML, Word, Shiny (for interactive web apps), others
  - These slides were created using RMarkdown; the code for doing so is available on the course [github repository](https://github.com/PrisonRodeo/PLSC476-SP2021-git/tree/master/Code)
  
-
 \bigskip
-
 
 ---
 
@@ -80,7 +78,6 @@ options(digits = 3) # show fewer decimal places
 - Catch mistakes
 \bigskip
 - Learn something...
-
 
 ---
 
@@ -112,7 +109,6 @@ options(digits = 3) # show fewer decimal places
   - Cumulative Death Rate (per 100K population)
 
 \etwocol
-
 
 ---
 
@@ -175,7 +171,6 @@ names(COVID)[names(COVID)=="Population..2019."] <- "Population"
 names(COVID)[names(COVID)=="X7.Day.Average.New.Case.Rate"] <- "New.Case.Rate.7DayAvg"
 names(COVID)[names(COVID)=="County.FIPS.Code"] <- "FIPS"
 
-
 # Now view the data:
 
 knitr::kable(COVID[1:12,1:6],caption="PA COVID-19 Data, 1/27/2021")
@@ -191,7 +186,6 @@ knitr::kable(COVID[1:12,1:6],caption="PA COVID-19 Data, 1/27/2021")
 
 summary(COVID)
 ```
-
 
 ---
 
@@ -288,7 +282,6 @@ abline(v=mean(COVID$Case.Percent),lwd=2,lty=2)
 
 ```
 
-
 ---
 
 **"Kernel Density" Plot**
@@ -317,7 +310,6 @@ with(COVID, lines(density(Case.Percent),t="l",lwd=2))
 
 ```
 
-
 ---
 
 **A Boxplot**
@@ -330,7 +322,6 @@ with(COVID, boxplot(Case.Percent,main="",
                     ylim=c(0,20),cex.lab=0.7))
                     
 ```                    
-
 
 ---
 
@@ -360,7 +351,6 @@ boxplot(COVID[,c("Case.Percent","Pop100K")],main="",
 - Can also compare the *empirical* distribution of a variable to a *theoretical* distribution
 - If the two are the same, the quantiles will lie on a straight line
 
-
 ---
 
 **One Density...**
@@ -386,7 +376,6 @@ with(COVID,qqnorm(New.Case.Rate,main="",
 with(COVID, qqline(New.Case.Rate,lwd=2))
 
 ```
-
 
 ---
 
@@ -418,7 +407,6 @@ with(COVID,qqplot(New.Case.Rate,Cumulative.Case.Rate,
 
 ```
 
-
 ---
 
 \LARGE
@@ -444,7 +432,6 @@ with(Centre, plot(Date,New.Cases,t="l",
 
 ```
 
-
 ---
 
 **Add a "Smoother"**
@@ -460,45 +447,43 @@ with(Centre, lines(lowess(Date,New.Cases,f=0.1),
 
 ```
 
-<!-- This map code needs work... -->
+---
 
-<!-- --- -->
+**Another Cool Viz: Maps**
 
-<!-- **Another Cool Viz: Maps** -->
+```{r fig.cap="Total Cases (Percent of the Population)",fig.width=4.5, fig.asp=0.9,comment=NA}
 
-<!-- ```{r fig.cap="Cumulative Case Percent",fig.width=4, fig.asp=0.9,comment=NA}  -->
+# Let's make a map!
 
-<!-- # Let's make a map! -->
+# Get some mapping data:
 
-<!-- # Get some mapping data: -->
+allmap <- get_urbn_map(map = "counties", sf = TRUE) # map data
+PAmap <- allmap[allmap$state_name == "Pennsylvania",] # PA
+PAmap$FIPS<-as.numeric(PAmap$county_fips)
 
-<!-- allmap <- get_urbn_map(map = "counties", sf = TRUE) # map data -->
-<!-- PAmap <- allmap[allmap$state_name == "Pennsylvania",] # PA -->
-<!-- PAmap$FIPS<-as.numeric(PAmap$county_fips) -->
+# Merge with COVID data:
 
-<!-- # Merge with COVID data: -->
+COVID2<-merge(COVID,PAmap,by=c("FIPS"))
 
-<!-- COVID<-merge(COVID,PAmap,by=c("FIPS")) -->
-<!-- COVID <- data.frame(COVID) -->
+# Make variables & legend breaks:
 
-<!-- # Make variables & legend breaks: -->
+COVID2$CPct<-round(COVID2$Case.Percent,1)
+my_breaks = c(0.5,1,2,4,8,16)
 
-<!-- COVID$CPct<-round(COVID$Case.Percent,1) -->
-<!-- my_breaks = c(0.5,1,2,5,10,20) -->
+COVID2 %>%
+  ggplot() + theme_void() +
+  geom_sf(mapping = aes(fill = Case.Percent,geometry=geometry),
+          color = gray(0), size = 0.05) +
+  scale_fill_gradientn(name="Cases (Percent)",trans="log",
+                       breaks=my_breaks, labels=my_breaks,
+                       colours=c("darkgreen","yellow","red")) +
+  labs(title="",
+       fill="Cases per 100 Population",
+       subtitle="") +
+  geom_sf_text(aes(label=CPct, geometry=geometry),
+               fun.geometry=st_centroid,cex=1.5,col="black")
 
-<!-- COVID %>% -->
-<!--   ggplot() + theme_void() + -->
-<!--   geom_sf(mapping = aes(fill = Case.Percent), -->
-<!--           color = gray(0), size = 0.05) + -->
-<!--   scale_fill_gradientn(name="Cases (Percent)", -->
-<!--                        breaks=my_breaks, labels=my_breaks, -->
-<!--                        colours=c("darkgreen","yellow","red")) + -->
-<!--   labs(title="FOO", -->
-<!--        fill="Cases per 100 Population", -->
-<!--        subtitle="     Source:https://github.com/nytimes/covid-19-data") + -->
-<!--   geom_sf_text(aes(label=CPct,geometry=geometry), -->
-<!--                fun.geometry=st_centroid,cex=2,col="black") -->
-<!-- ``` -->
+```
 
 ---
 
@@ -621,7 +606,6 @@ legend("topright",legend=c("Urban","Rural"),
 
 ```
 
-
 ---
 
 **Or:**
@@ -654,7 +638,6 @@ with(COVID,scatterplotMatrix(~New.Case.Rate+
 
 ```
 
-
 ---
 
 **Conditioned Scatterplots**
@@ -663,12 +646,12 @@ with(COVID,scatterplotMatrix(~New.Case.Rate+
 par(mfrow=c(1,2)) # <- Create a combined plot: 1 row, 2 columns
 par(mar=c(4,4,4,2))
 with(COVID[COVID$Urb=="Urban",],
-     plot(Cumulative.Case.Rate,Total.Death.Rate,
+     plot(Cumulative.Case.Rate,Total.Death.Rate,cex=0.7,
           pch=19,main=" ",cex.axis=0.7,cex.lab=0.7,
      xlab="Cumulative Case Rate: Urban",ylab="Cumulative Death Rate",
      xlim=c(2000,18000),ylim=c(0,350)))
 with(COVID[COVID$Urb=="Rural",],
-     plot(Cumulative.Case.Rate,Total.Death.Rate,
+     plot(Cumulative.Case.Rate,Total.Death.Rate,cex=0.7,
           pch=19,main=" ",cex.axis=0.7,cex.lab=0.7,
      xlab="Cumulative Case Rate: Rural",ylab="Cumulative Death Rate",
      xlim=c(2000,18000),ylim=c(0,350)))
@@ -684,6 +667,5 @@ with(COVID[COVID$Urb=="Rural",],
 - Contour / Wireframe Plots ("3D")
 - Radar plots
 - Parallel coordinates plots
-- MAPS...
 - Dynamic / interactive graphics
 - Many more...

@@ -284,8 +284,8 @@ with(SexData, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
 png("RaceBarplot.png",640,640) #  <-- create a .PNG file
 barplot(prop.table(table(RaceData$LiberalVote))*100,
         names.arg=c("Conservative","Liberal")) # <-- plot...
-title(main="Liberal Voting Percentage: Racial # <-- title...
-      Discrimination Cases")
+title(main="Liberal Voting Percentage: Racial 
+      Discrimination Cases")   # <-- title...
 dev.off()                      # <-- end creation of the .PNG
 
 # A couple things here.

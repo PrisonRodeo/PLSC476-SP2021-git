@@ -270,18 +270,18 @@ dev.off()
 
 # Same scatterplot, this time vs. law graduates:
 
-r2<-round(with(States,cor(NGrads,BarPassRate,
+r2<-round(with(StatesNoDC,cor(GradsPer100K,BarPassRate,
                           use="complete.obs")),2)
 
 pdf("BarPass-Grads-Scatter.pdf",6,5)
-par(mar=c(4,4,2,2))
-with(States, plot(GradsPer100K,BarPassRate,pch=20,
-                  xlim=c(0,3700),ylim=c(55,85),
-                  xlab="Number of 2019 Law Graduates",
+par(mar=c(5,4,2,2))
+with(StatesNoDC, plot(GradsPer100K,BarPassRate,pch=20,
+                  xlim=c(0,28),ylim=c(55,85),
+                  xlab="Number of 2019 Law Graduates\nPer 100,000 Population",
                   ylab="Bar Passage Rate"))
-with(States, text(NGrads,BarPassRate,pos=1,
+with(StatesNoDC, text(GradsPer100K,BarPassRate,pos=1,
                   labels=States$State,cex=0.7))
-text(3000,60,paste0("r = ",r2),cex=1.5)
+text(22,60,paste0("r = ",r2),cex=1.5)
 dev.off()
 
 ###############################################
